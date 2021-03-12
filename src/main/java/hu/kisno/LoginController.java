@@ -2,13 +2,19 @@ package hu.kisno;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -32,6 +38,25 @@ public class LoginController implements Initializable {
 
     @FXML
     private PasswordField loginPassword;
+
+    @FXML
+    private Button loginSignUpButton;
+
+    public void loginSignUpButtonOnAction(ActionEvent event){
+
+        try {
+
+            Parent root = FXMLLoader.load(getClass().getResource("signup.fxml"));
+            Stage registerStage = new Stage();
+            registerStage.initStyle(StageStyle.UNDECORATED);
+            registerStage.setScene(new Scene(root, 700, 400));
+            registerStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
@@ -71,6 +96,5 @@ public class LoginController implements Initializable {
         }
 
     }
-
 
 }

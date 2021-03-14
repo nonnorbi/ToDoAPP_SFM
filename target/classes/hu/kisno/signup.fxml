@@ -38,14 +38,9 @@
         <PasswordField fx:id="signUpPasswird" layoutX="250.0" layoutY="257.0" prefHeight="25.0" prefWidth="200.0" promptText="Password" style="-fx-background-color: #FFFFFF; -fx-background-insets: 0; -fx-border-color: #FFFFFF; -fx-border-radius: 0;" />
         <Separator layoutX="255.0" layoutY="283.0" prefWidth="200.0" />
         <Button fx:id="signUpButton" layoutX="315.0" layoutY="305.0" mnemonicParsing="false" onAction="#signUpButtonOnAction" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #454545; -fx-background-insets: 0; -fx-border-color: #FFFFFF;" text="Sign Up" textFill="WHITE" />
-      <Label fx:id="registrationMassageLabel" alignment="CENTER" layoutX="230.0" layoutY="349.0" prefHeight="19.0" prefWidth="250.0" textFill="#06ae1a">
+      <Label fx:id="registrationMassageLabel" alignment="CENTER" layoutX="207.0" layoutY="355.0" prefHeight="17.0" prefWidth="287.0" style="-fx-background-color: #FFFFFFFF;" textAlignment="JUSTIFY" textFill="#009e15">
          <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label fx:id="errorSignUpMassageLabel" alignment="CENTER" layoutX="226.0" layoutY="347.0" prefHeight="17.0" prefWidth="250.0" textFill="#bc0404">
-         <font>
-            <Font size="13.0" />
+            <Font size="14.0" />
          </font>
       </Label>
     </children>

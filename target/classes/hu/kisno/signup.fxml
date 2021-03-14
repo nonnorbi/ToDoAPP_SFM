@@ -43,5 +43,10 @@
             <Font size="14.0" />
          </font>
       </Label>
+      <Label fx:id="errorSignUpMassageLabel" alignment="CENTER" layoutX="226.0" layoutY="347.0" prefHeight="17.0" prefWidth="250.0" textFill="#bc0404">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

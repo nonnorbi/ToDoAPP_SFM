@@ -1,5 +1,6 @@
 package hu.kisno;
 
+import hu.kisno.animations.Shaker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,6 +45,9 @@ public class SignUpController implements Initializable {
     @FXML
     private Button signUpButton;
 
+    @FXML
+    private Label errorSignUpMassageLabel;
+
     public void signUpButtonOnAction(ActionEvent event){
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
@@ -53,34 +57,52 @@ public class SignUpController implements Initializable {
         String username = signUpUsername.getText();
         String password = signUpPasswird.getText();
 
-        String insertFields = "INSERT INTO users(firstname, lastname, username, password) VALUES ('";
-        String insertValues = firstname + "','" + lastname + "','" + username + "','" + password + "')";
-        String insertRegister = insertFields + insertValues;
+        String currentUserName = "SELECT * FROM users WHERE username = '" + signUpUsername +"';";
 
-        try{
-            Statement statement = connectDB.createStatement();
-            statement.executeUpdate(insertRegister);
+        if (!currentUserName.isBlank()){
 
-            registrationMassageLabel.setText("User has been registreted successfully!");
+            errorSignUpMassageLabel.setText("Username not available!");
+            Shaker firstName = new Shaker(sgnUpFisrtName);
+            Shaker lastName = new Shaker(signUpLastName);
+            Shaker userName = new Shaker(signUpUsername);
+            Shaker pwd = new Shaker(signUpPasswird);
 
-            wait(50);
+            firstName.shake();
+            lastName.shake();
+            userName.shake();
+            pwd.shake();
+
+        }else {
+
+            String insertFields = "INSERT INTO users(firstname, lastname, username, password) VALUES ('";
+            String insertValues = firstname + "','" + lastname + "','" + username + "','" + password + "')";
+            String insertRegister = insertFields + insertValues;
 
             try {
+                Statement statement = connectDB.createStatement();
+                statement.executeUpdate(insertRegister);
 
-                signUpButton.getScene().getWindow().hide();
-                Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-                Stage registerStage = new Stage();
-                registerStage.initStyle(StageStyle.UNDECORATED);
-                registerStage.setScene(new Scene(root, 700, 400));
-                registerStage.showAndWait();
+                registrationMassageLabel.setText("User has been registreted successfully!");
 
-            } catch (IOException e) {
+                wait(50);
+
+                try {
+
+                    signUpButton.getScene().getWindow().hide();
+                    Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+                    Stage registerStage = new Stage();
+                    registerStage.initStyle(StageStyle.UNDECORATED);
+                    registerStage.setScene(new Scene(root, 700, 400));
+                    registerStage.showAndWait();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
+                e.getCause();
             }
-
-        }catch (Exception e){
-            e.printStackTrace();
-            e.getCause();
         }
     }
 

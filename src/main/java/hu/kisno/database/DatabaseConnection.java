@@ -1,4 +1,4 @@
-package hu.kisno;
+package hu.kisno.database;
 
 import java.sql.DriverManager;
 import java.sql.Connection;

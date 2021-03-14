@@ -1,7 +1,10 @@
 package hu.kisno;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
@@ -10,22 +13,21 @@ import java.util.ResourceBundle;
 public class AddItemController {
 
     @FXML
-    private ResourceBundle resources;
-
+    private URL url;
     @FXML
-    private URL location;
-
+    private ResourceBundle resourceBundle;
     @FXML
-    private Button addButton;
-
+    private Label notTaskLabel;
     @FXML
-    void initialize() {
-        addButton.setOnAction(event -> {
-            System.out.println("Clicked addButton!");
-        });
-    }
+    private ImageView addItemImg;
+
+    Image addImg = new Image(getClass().getResourceAsStream("icons/add_icon.png"));
+    Image closeImg = new Image(getClass().getResourceAsStream("icons/close_icon.png"));
+
+    public void addItem(){}
 
     public void close(MouseEvent event) {
         System.exit(0);
     }
+
 }

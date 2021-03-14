@@ -1,5 +1,9 @@
 package hu.kisno;
 
+import hu.kisno.animations.Shaker;
+import hu.kisno.database.DatabaseConnection;
+
+import hu.kisno.animations.Shaker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLOutput;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
@@ -29,16 +34,12 @@ public class LoginController implements Initializable {
 
     @FXML
     private Button loginButton;
-
     @FXML
     private Label loginMassageLabel;
-
     @FXML
     private TextField loginUsername;
-
     @FXML
     private PasswordField loginPassword;
-
     @FXML
     private Button loginSignUpButton;
 
@@ -46,6 +47,7 @@ public class LoginController implements Initializable {
 
         try {
 
+            loginSignUpButton.getScene().getWindow().hide();
             Parent root = FXMLLoader.load(getClass().getResource("signup.fxml"));
             Stage registerStage = new Stage();
             registerStage.initStyle(StageStyle.UNDECORATED);
@@ -74,7 +76,7 @@ public class LoginController implements Initializable {
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
 
-        String verifyLogin = "SELECT count(1) FROM users WHERE username = '" + loginUsername.getText()
+        String verifyLogin = "SELECT count(*) FROM users WHERE username = '" + loginUsername.getText()
                 + "' AND password = '" + loginPassword.getText() + "'";
 
         try{
@@ -84,11 +86,31 @@ public class LoginController implements Initializable {
 
             while (queryResult.next()){
                 if(queryResult.getInt(1) ==  1){
-                    loginMassageLabel.setText("Congratulations!");
+                    System.out.println("Welcome!");
+
+                    try {
+
+                        loginSignUpButton.getScene().getWindow().hide();
+                        Parent root = FXMLLoader.load(getClass().getResource("additem.fxml"));
+                        Stage registerStage = new Stage();
+                        registerStage.initStyle(StageStyle.UNDECORATED);
+                        registerStage.setScene(new Scene(root, 700, 650));
+                        registerStage.showAndWait();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }else{
                     loginMassageLabel.setText("Invalid login. Please try again. ");
+                    Shaker userNameShaker = new Shaker(loginUsername);
+                    Shaker passwordShaker = new Shaker(loginPassword);
+                    userNameShaker.shake();
+                    passwordShaker.shake();
                 }
             }
+
 
         }catch (Exception e){
             e.printStackTrace();

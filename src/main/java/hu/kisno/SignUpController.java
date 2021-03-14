@@ -1,5 +1,6 @@
 package hu.kisno;
 
+import hu.kisno.database.DatabaseConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,7 +12,6 @@ import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
@@ -62,6 +62,7 @@ public class SignUpController implements Initializable {
             e.getCause();
         }
     }
+
 
 
     @FXML

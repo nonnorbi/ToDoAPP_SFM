@@ -1,5 +1,6 @@
 package hu.kisno;
 
+import hu.kisno.database.DatabaseConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,6 +47,7 @@ public class LoginController implements Initializable {
 
         try {
 
+            loginSignUpButton.getScene().getWindow().hide();
             Parent root = FXMLLoader.load(getClass().getResource("signup.fxml"));
             Stage registerStage = new Stage();
             registerStage.initStyle(StageStyle.UNDECORATED);

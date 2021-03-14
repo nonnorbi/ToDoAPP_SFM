@@ -86,7 +86,22 @@ public class LoginController implements Initializable {
 
             while (queryResult.next()){
                 if(queryResult.getInt(1) ==  1){
-                    loginMassageLabel.setText("Welcome!");
+                    System.out.println("Welcome!");
+
+                    try {
+
+                        loginSignUpButton.getScene().getWindow().hide();
+                        Parent root = FXMLLoader.load(getClass().getResource("additem.fxml"));
+                        Stage registerStage = new Stage();
+                        registerStage.initStyle(StageStyle.UNDECORATED);
+                        registerStage.setScene(new Scene(root, 700, 400));
+                        registerStage.showAndWait();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }else{
                     loginMassageLabel.setText("Invalid login. Please try again. ");
                     Shaker userNameShaker = new Shaker(loginUsername);

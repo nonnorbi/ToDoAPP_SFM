@@ -18,6 +18,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
@@ -57,53 +58,54 @@ public class SignUpController implements Initializable {
         String username = signUpUsername.getText();
         String password = signUpPasswird.getText();
 
-        String currentUserName = "SELECT * FROM users WHERE username = '" + signUpUsername +"';";
+        /*  Statement statement  = connectDB.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM users");
+            while (rs.next()){
+                String name = rs.getString("username");
+                if(name.equals(signUpUsername)){
+                    System.out.println("Not available username!");*/ // FIND method mysql
 
-        if (!currentUserName.isBlank()){
+           String insertFields = "INSERT INTO users(firstname, lastname, username, password) VALUES ('";
+           String insertValues = firstname + "','" + lastname + "','" + username + "','" + password + "')";
+           String insertRegister = insertFields + insertValues;
+           try {
+               Statement statement = connectDB.createStatement();
+               statement.executeUpdate(insertRegister);
 
-            errorSignUpMassageLabel.setText("Username not available!");
-            Shaker firstName = new Shaker(sgnUpFisrtName);
-            Shaker lastName = new Shaker(signUpLastName);
-            Shaker userName = new Shaker(signUpUsername);
-            Shaker pwd = new Shaker(signUpPasswird);
+               registrationMassageLabel.setText("User has been registreted successfully!");
 
-            firstName.shake();
-            lastName.shake();
-            userName.shake();
-            pwd.shake();
+               wait(50);
 
-        }else {
+               try {
 
-            String insertFields = "INSERT INTO users(firstname, lastname, username, password) VALUES ('";
-            String insertValues = firstname + "','" + lastname + "','" + username + "','" + password + "')";
-            String insertRegister = insertFields + insertValues;
+                   signUpButton.getScene().getWindow().hide();
+                   Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+                   Stage registerStage = new Stage();
+                   registerStage.initStyle(StageStyle.UNDECORATED);
+                   registerStage.setScene(new Scene(root, 700, 400));
+                   registerStage.showAndWait();
 
-            try {
-                Statement statement = connectDB.createStatement();
-                statement.executeUpdate(insertRegister);
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
 
-                registrationMassageLabel.setText("User has been registreted successfully!");
+           } catch (Exception e) {
 
-                wait(50);
+               errorSignUpMassageLabel.setText("Username is not available!");
+               System.out.println("Username is not available!");
+               Shaker firstName = new Shaker(sgnUpFisrtName);
+               Shaker lastName = new Shaker(signUpLastName);
+               Shaker userName = new Shaker(signUpUsername);
+               Shaker pwd = new Shaker(signUpPasswird);
 
-                try {
+               firstName.shake();
+               lastName.shake();
+               userName.shake();
+               pwd.shake();
 
-                    signUpButton.getScene().getWindow().hide();
-                    Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-                    Stage registerStage = new Stage();
-                    registerStage.initStyle(StageStyle.UNDECORATED);
-                    registerStage.setScene(new Scene(root, 700, 400));
-                    registerStage.showAndWait();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                e.getCause();
-            }
-        }
+               e.printStackTrace();
+               e.getCause();
+           }
     }
 
 

@@ -1,0 +1,15 @@
+.date-picker .text-field{
+    -fx-background-color: #727272;
+    -fx-border-color: #727272;
+    -fx-font-size: 15;
+    -fx-font-color: white;
+    -fx-background-inset: 0;
+    -fx-border-radius: 0;
+}
+.date-picker .arrow-button{
+    -fx-background-color: #727272;
+    -fx-border-color: #727272;
+    -fx-background-inset: 0;
+    -fx-border-radius: 0;
+    -fx-background-repeat: no repeat;
+}

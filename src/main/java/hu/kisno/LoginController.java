@@ -3,7 +3,6 @@ package hu.kisno;
 import hu.kisno.animations.Shaker;
 import hu.kisno.database.DatabaseConnection;
 
-import hu.kisno.animations.Shaker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,15 +14,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLOutput;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -42,13 +41,21 @@ public class LoginController implements Initializable {
     private PasswordField loginPassword;
     @FXML
     private Button loginSignUpButton;
+    @FXML
+    private AnchorPane rootAPane;
 
+    int uid;
+
+    //Sign Up screen
     public void loginSignUpButtonOnAction(ActionEvent event){
 
         try {
 
-            loginSignUpButton.getScene().getWindow().hide();
-            Parent root = FXMLLoader.load(getClass().getResource("signup.fxml"));
+            //loginSignUpButton.getScene().getWindow().hide();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("signup.fxml"));
+            loader.load();
+            Parent root = loader.getRoot();
             Stage registerStage = new Stage();
             registerStage.initStyle(StageStyle.UNDECORATED);
             registerStage.setScene(new Scene(root, 700, 400));
@@ -72,6 +79,7 @@ public class LoginController implements Initializable {
         }
     }
 
+    //Login validate
     public void validateLogin(){
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
@@ -82,25 +90,37 @@ public class LoginController implements Initializable {
         try{
 
             Statement statement = connectDB.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM users WHERE username LIKE '" + loginUsername.getText() + "'");
+            while (rs.next()){
+                uid = rs.getInt("userid");
+            }
             ResultSet queryResult = statement.executeQuery(verifyLogin);
 
             while (queryResult.next()){
                 if(queryResult.getInt(1) ==  1){
-                    System.out.println("Welcome!");
 
                     try {
 
-                        loginSignUpButton.getScene().getWindow().hide();
-                        Parent root = FXMLLoader.load(getClass().getResource("additem.fxml"));
-                        Stage registerStage = new Stage();
-                        registerStage.initStyle(StageStyle.UNDECORATED);
-                        registerStage.setScene(new Scene(root, 700, 650));
-                        registerStage.showAndWait();
+                        FXMLLoader loader = new FXMLLoader();
+                        loader.setLocation(getClass().getResource("addItem.fxml"));
+                        loader.load();
+                        Parent root = loader.getRoot();
+
+                        try(PrintStream ps = new PrintStream("uID.txt") ){
+                            ps.print(uid);
+                        }catch ( FileNotFoundException e ){
+                            e.printStackTrace();
+                            e.getCause();
+                        }
+
+                        Stage addItemStage = new Stage();
+                        addItemStage.initStyle(StageStyle.UNDECORATED);
+                        addItemStage.setScene(new Scene(root, 900, 400));
+                        addItemStage.showAndWait();
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
 
                 }else{
                     loginMassageLabel.setText("Invalid login. Please try again. ");
@@ -118,5 +138,4 @@ public class LoginController implements Initializable {
         }
 
     }
-
 }

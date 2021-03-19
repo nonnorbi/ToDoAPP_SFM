@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.kisno.LoginController">
+<AnchorPane fx:id="rootAPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.kisno.LoginController">
    <children>
       <AnchorPane prefHeight="100.0" prefWidth="700.0" style="-fx-background-color: #454545;">
          <children>
@@ -46,14 +46,12 @@
             <Font size="13.0" />
          </font>
       </Label>
-      <Label layoutX="593.0" layoutY="176.0" scaleX="2.0" scaleY="2.0">
-      </Label>
       <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="675.0" layoutY="5.0" onMouseClicked="#close" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@icons/close_icon.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="90.0" layoutY="157.0" opacity="0.02" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="90.0" layoutY="157.0" opacity="0.05" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@icons/login_icon.png" />
          </image>

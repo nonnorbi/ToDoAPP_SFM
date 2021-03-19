@@ -1,4 +1,4 @@
-package hu.kisno.model;
+package hu.kisno;
 
 public class User {
 
@@ -48,4 +48,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

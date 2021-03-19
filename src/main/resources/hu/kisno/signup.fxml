@@ -40,19 +40,19 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="errorSignUpMassageLabel" alignment="CENTER" layoutX="230.0" layoutY="346.0" prefHeight="17.0" prefWidth="250.0" textFill="#bc0404">
+      <Label fx:id="errorSignUpMassageLabel" alignment="CENTER" layoutX="226.0" layoutY="347.0" prefHeight="17.0" prefWidth="250.0" textFill="#bc0404">
          <font>
             <Font size="13.0" />
          </font>
       </Label>
-      <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="675.0" layoutY="5.0" onMouseClicked="#close" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@icons/close_icon.png" />
-         </image>
-      </ImageView>
       <ImageView fitHeight="250.0" fitWidth="300.0" layoutX="40.0" layoutY="98.0" opacity="0.05" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@icons/registration_icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="675.0" layoutY="5.0" onMouseClicked="#close" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/close_icon.png" />
          </image>
       </ImageView>
     </children>

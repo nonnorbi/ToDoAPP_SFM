@@ -1,41 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.kisno.AddItemController">
+<AnchorPane prefHeight="400.0" prefWidth="900.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.kisno.AddItemController">
     <children>
-        <Label fx:id="notTaskLabel" layoutX="241.0" layoutY="157.0" text="Not Tasks for Today, yet!">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Label>
-        <AnchorPane prefHeight="100.0" prefWidth="700.0" style="-fx-background-color: #454545;">
-            <children>
-                <Label layoutX="350.0" layoutY="31.0" text="DO" textFill="WHITE">
-                    <font>
-                        <Font size="26.0" />
-                    </font>
-                </Label>
-                <Label layoutX="334.0" layoutY="31.0" text="2" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="27.0" />
-                    </font>
-                </Label>
-            <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="675.0" layoutY="5.0" onMouseClicked="#close" pickOnBounds="true" preserveRatio="true">
+        <TableView fx:id="table" layoutX="250.0" layoutY="135.0" prefHeight="241.0" prefWidth="619.0" stylesheets="@tview.css">
+            <columns>
+                <TableColumn fx:id="col_task" prefWidth="167.0" text="Task" />
+                <TableColumn fx:id="col_description" prefWidth="347.0" text="Description" />
+                <TableColumn fx:id="col_deadline" prefWidth="136.0" text="Deadline" />
+            </columns>
+        </TableView>
+        <TextField fx:id="uidLabel" layoutX="451.0" layoutY="-87.0" />
+        <TextField fx:id="taskField" layoutX="20.0" layoutY="135.0" prefHeight="33.0" prefWidth="200.0" promptText="Task" style="-fx-background-color: #727272; -fx-border-color: #727272; -fx-background-insets: 0; -fx-border-radius: 0;" />
+        <TextField fx:id="descriptionField" layoutX="20.0" layoutY="182.0" prefHeight="50.0" prefWidth="200.0" promptText="Description" style="-fx-background-color: #757575; -fx-border-color: #757575; -fx-background-insets: 0; -fx-border-radius: 0; -fx-font-size: 15;" />
+        <DatePicker fx:id="dateFld" layoutX="20.0" layoutY="252.0" prefHeight="33.0" prefWidth="200.0" promptText="Deadline" stylesheets="@datePicker.css" />
+        <AnchorPane prefHeight="100.0" prefWidth="900.0" style="-fx-background-color: #454545;">
+         <children>
+            <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="875.0" layoutY="5.0" onMouseClicked="#closeOnAction" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@icons/close_icon.png" />
                </image>
             </ImageView>
-            </children>
-        </AnchorPane>
-      <ImageView fx:id="addItemImg" fitHeight="70.0" fitWidth="70.0" layoutX="315.0" layoutY="203.0" onMouseClicked="#addItem" pickOnBounds="true" preserveRatio="true">
+            <Label layoutX="441.0" layoutY="23.0" text="DO" textFill="WHITE">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <Label layoutX="424.0" layoutY="22.0" text="2" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="28.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
+      <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="22.0" layoutY="308.0" onMouseClicked="#addOnAction" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@icons/add_icon.png" />
          </image>
       </ImageView>
+      <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="72.0" layoutY="308.0" onMouseClicked="#deleteOnAction" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/delete_icon.png" />
+         </image>
+      </ImageView>
     </children>
+
 </AnchorPane>

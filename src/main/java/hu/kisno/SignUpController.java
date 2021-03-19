@@ -24,10 +24,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
-public class SignUpController implements Initializable {
+public class SignUpController {
 
-    @FXML
-    private Label closeLabel;
     @FXML
     private Label registrationMassageLabel;
     @FXML
@@ -43,7 +41,7 @@ public class SignUpController implements Initializable {
     @FXML
     private Label errorSignUpMassageLabel;
 
-    public void signUpButtonOnAction(ActionEvent event){
+    public void signUpButtonOnAction(ActionEvent event) {
 
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
@@ -53,34 +51,38 @@ public class SignUpController implements Initializable {
         String username = signUpUsername.getText();
         String password = signUpPasswird.getText();
 
+        String insertFields = "INSERT INTO users(firstname, lastname, username, password) VALUES ('";
+        String insertValues = firstname + "','" + lastname + "','" + username + "','" + password + "')";
+        String insertRegister = insertFields + insertValues;
+
         try {
 
-            String insertFields = "INSERT INTO users(firstname, lastname, username, password) VALUES ('";
-            String insertValues = firstname + "','" + lastname + "','" + username + "','" + password + "')";
-            String insertRegister = insertFields + insertValues;
+            errorSignUpMassageLabel.setText("");
 
             Statement statement = connectDB.createStatement();
             statement.executeUpdate(insertRegister);
 
-            registrationMassageLabel.setText("User has been registreted successguly!");
+            registrationMassageLabel.setText("User hase been registreted successfully!");
+            signUpButton.getScene().getWindow().hide();
+            /*try {
 
-            //Switch to Login screen
-            try {
                 signUpButton.getScene().getWindow().hide();
-                Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-                Stage registerStage = new Stage();
-                registerStage.initStyle(StageStyle.UNDECORATED);
-                registerStage.setScene(new Scene(root, 700, 400));
-                registerStage.showAndWait();
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("login.fxml"));
+                loader.load();
+                Parent root = loader.getRoot();
+                Stage loginStage = new Stage();
+                loginStage.initStyle(StageStyle.UNDECORATED);
+                loginStage.setScene(new Scene(root, 700, 400));
+                loginStage.showAndWait();
+
 
             } catch ( IOException e ) {
                 e.printStackTrace();
-            }
+            }*/
 
-        //Unsuccessful registration || reserved username
-        } catch ( Exception e ) {
 
-            errorSignUpMassageLabel.setText("Username is not available!");
+        } catch ( SQLException throwables ) {
 
             Shaker firstName = new Shaker(sgnUpFisrtName);
             Shaker lastName = new Shaker(signUpLastName);
@@ -92,19 +94,14 @@ public class SignUpController implements Initializable {
             userName.shake();
             pwd.shake();
 
-            //e.printStackTrace();
-            //e.getCause();
+            errorSignUpMassageLabel.setText("Username is not available!");
 
+            throwables.printStackTrace();
+            throwables.getCause();
         }
+
     }
 
-
-    @FXML
-    void close(MouseEvent event) {
-        System.exit(0);
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-    }
+        @FXML
+        public void close (MouseEvent event){ System.exit(0); }
 }

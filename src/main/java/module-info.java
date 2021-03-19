@@ -7,6 +7,7 @@ module hu.kisno {
     requires java.sql;
     requires mysql.connector.java;
     requires fontawesomefx;
+    requires javafx.graphicsEmpty;
 
     opens hu.kisno to javafx.fxml;
     exports hu.kisno;

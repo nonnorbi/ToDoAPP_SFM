@@ -6,8 +6,8 @@ module hu.kisno {
     requires javafx.fxml;
     requires java.sql;
     requires mysql.connector.java;
-    requires fontawesomefx;
     requires javafx.graphicsEmpty;
+    requires org.testng;
 
     opens hu.kisno to javafx.fxml;
     exports hu.kisno;

@@ -1,11 +1,13 @@
 .table-view{
     -fx-background-color: #757575;
     -fx-border-color: #757575;
+    -fx-text-color: #FFFFFF;
 }
 .table-view .column-header{
     -fx-background-color: #757575;
     -fx-border-color: #757575;
     -fx-font-size: 16;
+    -fx-text-color: white;
 }
 .table-view .column-header .label{
     -fx-alignment: CENTRE_LEFT;
@@ -15,14 +17,19 @@
     -fx-border-color: #757575;
     -fx-alignment: CENTER_LEFT;
     -fx-font-size: 15;
+    -fx-font-color: white;
 }
-.table-view .fill{
+/*.text-field{
+    -fx-text-inner-color: #FFFFFF;
+}*/
+/*.table-view .fill{
     -fx-background-color: #FFFFFF;
-}
+}*/
 .table-row-cell: hover{
-    -fx-background-color: #FFFFFF;
-    -fx-text-background-color: white;
+    /*-fx-background-color: #blue;*/
+    -fx-text-background-color: blue;
 }
+
 .table-view .virtual-flow .scroll-bar: vertical,
 .table-view .virtual-flow .scroll-bar: vertical .track,
 .table-view .virtual-flow .scroll-bar: vertical .track-background,

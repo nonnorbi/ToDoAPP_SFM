@@ -2,9 +2,12 @@
     -fx-background-color: #727272;
     -fx-border-color: #727272;
     -fx-font-size: 15;
-    -fx-font-color: white;
+    -fx-text-color: white;
     -fx-background-inset: 0;
     -fx-border-radius: 0;
+}
+.text-field{
+    -fx-text-inner-color: #FFFFFF;
 }
 .date-picker .arrow-button{
     -fx-background-color: #727272;

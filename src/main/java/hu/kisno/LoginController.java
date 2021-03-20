@@ -93,6 +93,13 @@ public class LoginController implements Initializable {
             ResultSet rs = statement.executeQuery("SELECT * FROM users WHERE username LIKE '" + loginUsername.getText() + "'");
             while (rs.next()){
                 uid = rs.getInt("userid");
+                try(PrintStream ps = new PrintStream("C:/Users/kisno/IdeaProjects/ToDoAPP_SFM/uID.txt") ){
+                    ps.print(uid);
+                    System.out.println(uid + " login controller");
+                }catch ( FileNotFoundException e ){
+                    e.printStackTrace();
+                    e.getCause();
+                }
             }
             ResultSet queryResult = statement.executeQuery(verifyLogin);
 
@@ -105,14 +112,6 @@ public class LoginController implements Initializable {
                         loader.setLocation(getClass().getResource("addItem.fxml"));
                         loader.load();
                         Parent root = loader.getRoot();
-
-                        try(PrintStream ps = new PrintStream("uID.txt") ){
-                            ps.print(uid);
-                        }catch ( FileNotFoundException e ){
-                            e.printStackTrace();
-                            e.getCause();
-                        }
-
                         Stage addItemStage = new Stage();
                         addItemStage.initStyle(StageStyle.UNDECORATED);
                         addItemStage.setScene(new Scene(root, 900, 400));

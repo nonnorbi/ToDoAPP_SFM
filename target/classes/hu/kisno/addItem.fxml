@@ -20,9 +20,9 @@
             </columns>
         </TableView>
         <TextField fx:id="uidLabel" layoutX="451.0" layoutY="-87.0" />
-        <TextField fx:id="taskField" layoutX="20.0" layoutY="135.0" prefHeight="33.0" prefWidth="200.0" promptText="Task" style="-fx-background-color: #727272; -fx-border-color: #727272; -fx-background-insets: 0; -fx-border-radius: 0;" />
-        <TextField fx:id="descriptionField" layoutX="20.0" layoutY="182.0" prefHeight="50.0" prefWidth="200.0" promptText="Description" style="-fx-background-color: #757575; -fx-border-color: #757575; -fx-background-insets: 0; -fx-border-radius: 0; -fx-font-size: 15;" />
-        <DatePicker fx:id="dateFld" layoutX="20.0" layoutY="252.0" prefHeight="33.0" prefWidth="200.0" promptText="Deadline" />
+        <TextField fx:id="taskField" layoutX="20.0" layoutY="135.0" prefHeight="33.0" prefWidth="200.0" promptText="Task" style="-fx-background-color: #727272; -fx-border-color: #727272; -fx-background-insets: 0; -fx-border-radius: 0;" stylesheets="@textfield.css" />
+        <TextField fx:id="descriptionField" layoutX="20.0" layoutY="182.0" prefHeight="50.0" prefWidth="200.0" promptText="Description" style="-fx-background-color: #757575; -fx-border-color: #757575; -fx-background-insets: 0; -fx-border-radius: 0; -fx-font-size: 15;" stylesheets="@textfield.css" />
+        <DatePicker fx:id="dateFld" layoutX="20.0" layoutY="252.0" prefHeight="33.0" prefWidth="200.0" promptText="Deadline" stylesheets="@datePicker.css" />
         <AnchorPane prefHeight="100.0" prefWidth="900.0" style="-fx-background-color: #454545;">
          <children>
             <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="875.0" layoutY="5.0" onMouseClicked="#closeOnAction" pickOnBounds="true" preserveRatio="true">
@@ -41,14 +41,19 @@
                </font>
             </Label>
          </children></AnchorPane>
-      <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="22.0" layoutY="308.0" onMouseClicked="#addOnAction" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="add" fitHeight="50.0" fitWidth="50.0" layoutX="22.0" layoutY="308.0" onMouseClicked="#addOnAction" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@icons/add_icon.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="72.0" layoutY="308.0" onMouseClicked="#deleteOnAction" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="delete" fitHeight="50.0" fitWidth="50.0" layoutX="72.0" layoutY="308.0" onMouseClicked="#deleteOnAction" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@icons/delete_icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="edit" fitHeight="50.0" fitWidth="50.0" layoutX="126.0" layoutY="308.0" onMouseClicked="#editableOnAction" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/edit_icon.png" />
          </image>
       </ImageView>
     </children>

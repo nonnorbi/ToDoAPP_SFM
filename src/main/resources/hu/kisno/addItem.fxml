@@ -40,6 +40,11 @@
                   <Font name="System Bold" size="28.0" />
                </font>
             </Label>
+            <Label fx:id="nameLabel" alignment="CENTER" layoutX="292.0" layoutY="76.0" prefHeight="17.0" prefWidth="336.0" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
          </children></AnchorPane>
       <ImageView fx:id="add" fitHeight="50.0" fitWidth="50.0" layoutX="22.0" layoutY="308.0" onMouseClicked="#addOnAction" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -56,6 +61,16 @@
             <Image url="@icons/edit_icon.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="search" fitHeight="50.0" fitWidth="50.0" layoutX="178.0" layoutY="308.0" onMouseClicked="#searchOnAction" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/search_icon.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="errorLabel" alignment="CENTER" layoutX="21.0" layoutY="109.0" prefHeight="17.0" prefWidth="200.0" textFill="#d30404">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
     </children>
 
 </AnchorPane>

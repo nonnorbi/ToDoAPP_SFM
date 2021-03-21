@@ -5,21 +5,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 
@@ -39,6 +42,11 @@ public class AddItemController implements Initializable {
     private TextField descriptionField;
     @FXML
     private DatePicker dateFld;
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private Label nameLabel;
+
 
     ObservableList<Task> oblist = FXCollections.observableArrayList();
     int uID;
@@ -91,6 +99,12 @@ public class AddItemController implements Initializable {
         String descript = descriptionField.getText();
         String deadline = String.valueOf(dateFld.getValue());
 
+        if( task.isBlank() || descript.isBlank() || deadline.isBlank() ){
+            errorLabel.setText("Please give all information!");
+        }
+
+        errorLabel.setText("");
+
         String insertField = "INSERT INTO tasks(userid, description, task, deadline) VALUES('";
         String insertValues = uID + "','" + descript + "','" + task + "','" + deadline + "')";
         String insertTask = insertField + insertValues;
@@ -112,10 +126,12 @@ public class AddItemController implements Initializable {
 
     //Delete Task
     public void deleteOnAction(MouseEvent event){
+
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection con = connectNow.getConnection();
 
         task = table.getSelectionModel().getSelectedItem();
+
         try ( PreparedStatement pstmt = con.prepareStatement("DELETE FROM tasks WHERE taskid  = '" + task.getTaskid() + "'") ) {
             pstmt.execute();
             refresh();
@@ -151,6 +167,71 @@ public class AddItemController implements Initializable {
 
     }
 
+    @FXML
+    private void searchOnAction(MouseEvent event){
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection con = connectNow.getConnection();
+
+        String task = taskField.getText();
+        String deadline = null;
+
+        if(dateFld.getValue() != null) {
+             deadline = String.valueOf(dateFld.getValue());
+        }else{
+            errorLabel.setText("Please give date!");
+        }
+        if( !(deadline.isEmpty()) && !(task.isEmpty()) ){   //If search for task and deadline
+
+            errorLabel.setText("");
+            oblist.clear();
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID
+                        + "' AND t.deadline = '" + deadline + "' AND t.task = '" + task + "'");
+                while (rs.next()){
+                    oblist.add(new Task( rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline") ));
+                }
+
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+            }
+
+        }else if( !(deadline.isEmpty()) && (task.isEmpty()) ){  //If search for deadline
+
+            errorLabel.setText("");
+            oblist.clear();
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID
+                        + "' AND t.deadline = '" + deadline + "'");
+                while (rs.next()){
+                    oblist.add(new Task( rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline") ));
+                }
+
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+            }
+
+        }
+
+    }
+
     //Refresh table
     public void refresh(){
         DatabaseConnection connectNow = new DatabaseConnection();
@@ -170,6 +251,12 @@ public class AddItemController implements Initializable {
             col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
             col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
 
+            table.setEditable(true);
+
+            if(oblist.isEmpty()){
+                table.setPlaceholder(new Label("There ara no task, yet!"));
+            }
+
             table.setItems(oblist);
 
 
@@ -184,22 +271,65 @@ public class AddItemController implements Initializable {
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection con = connectNow.getConnection();
 
+        LocalDate localdate = LocalDate.now();
+        String ldate = localdate.toString();
+        int alert = 0;
+
         try {
             readFile();
         } catch ( IOException e ) {
             e.printStackTrace();
         }
 
+        try{
+            ResultSet rs = con.createStatement().executeQuery("SELECT * FROM users WHERE userid = '" + uID + "'");
+            while (rs.next()){
+                String fname = rs.getString("firstname");
+                String lname = rs.getString("lastname");
+                String uname = rs.getString("username");
+                nameLabel.setText(lname + " " + fname + " (" + uname + ") 's todo list!");
+            }
+        }catch ( SQLException e ){
+            e.printStackTrace();
+            e.getCause();
+        }
+
         try {
-            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid  = u.userid WHERE u.userid LIKE '" + uID + "'");
+            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID + "'");
             while (rs.next()){
                 oblist.add(new Task( rs.getInt("taskid"), rs.getInt("userid"), rs.getString("description"),
                         rs.getString("task"), rs.getString("deadline") ));
+                String deadline = rs.getString("deadline");
+
+                System.out.println(ldate + " " + deadline + " " + ldate.compareTo(deadline));
+
+                if ( ldate.compareTo(deadline) > 0 ) {
+                        alert++;
+                }
             }
 
         } catch ( SQLException throwables ) {
             throwables.printStackTrace();
             throwables.getCause();
+        }
+
+        if (alert > 0){
+
+            Stage window = new Stage();
+            window.initModality(Modality.APPLICATION_MODAL);
+            window.initStyle(StageStyle.UNDECORATED);
+            window.setWidth(500);
+            Label label = new Label();
+            label.setText("You have " + alert + " task(s) that have expired! Please delete it/them or add new deadline(s)");
+            Button  closeButton = new Button("OK");
+            closeButton.setOnAction(e-> window.close() );
+            VBox layout = new VBox(10);
+            layout.getChildren().addAll(label, closeButton);
+            layout.setAlignment(Pos.CENTER);
+            Scene scene = new Scene(layout);
+            window.setScene(scene);
+            window.showAndWait();
+
         }
 
         col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
@@ -222,6 +352,10 @@ public class AddItemController implements Initializable {
         });
 
         table.setEditable(true);
+
+        if(oblist.isEmpty()){
+            table.setPlaceholder(new Label("There ara no task, yet!"));
+        }
 
 
         table.setItems(oblist);

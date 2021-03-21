@@ -1,30 +1,30 @@
 package hu.kisno.database;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.sql.Connection;
 
-import static org.mockito.Mockito.*;
-
 class DatabaseConnectionTest {
-    @Mock
-    Connection databaseLink;
-    @InjectMocks
-    DatabaseConnection databaseConnection;
+
+    private DatabaseConnection databaseConnectionUnderTest;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+        databaseConnectionUnderTest = new DatabaseConnection();
+        Connection con = databaseConnectionUnderTest.getConnection();
+
     }
 
     @Test
     void testGetConnection() {
-        Connection result = databaseConnection.getConnection();
-        Assertions.assertEquals(null, result);
+        // Setup
+        setUp();
+
+        // Run the test
+        final Connection result = databaseConnectionUnderTest.getConnection();
+
+        // Verify the results
     }
 }

@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -38,6 +39,8 @@ public class SignUpController {
     private PasswordField signUpPasswird;
     @FXML
     private Button signUpButton;
+    @FXML
+    private Button loginButton;
     @FXML
     private Label errorSignUpMassageLabel;
 
@@ -102,6 +105,6 @@ public class SignUpController {
 
     }
 
-        @FXML
-        public void close (MouseEvent event){ System.exit(0); }
+    @FXML
+    public void close (MouseEvent event){ System.exit(0); }
 }

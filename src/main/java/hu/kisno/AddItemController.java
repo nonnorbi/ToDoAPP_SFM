@@ -74,9 +74,9 @@ public class AddItemController implements Initializable {
         BufferedReader reader = new BufferedReader(inputReader);
         String line = null;
         while ( (line = reader.readLine()) != null ){
-            System.out.println(line);
+            //System.out.println(line);
             uID = Integer.parseInt(line.trim());
-            System.out.println(uID);
+            //System.out.println(uID);
         }
         reader.close();
     }

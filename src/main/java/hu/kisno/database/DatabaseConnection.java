@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.Connection;
 
 public class DatabaseConnection {
+
     public Connection databaseLink;
 
     public Connection getConnection(){

@@ -95,7 +95,7 @@ public class LoginController implements Initializable {
                 uid = rs.getInt("userid");
                 try(PrintStream ps = new PrintStream("C:/Users/kisno/IdeaProjects/ToDoAPP_SFM/uID.txt") ){
                     ps.print(uid);
-                    System.out.println(uid + " login controller");
+                    //System.out.println(uid + " login controller");
                 }catch ( FileNotFoundException e ){
                     e.printStackTrace();
                     e.getCause();

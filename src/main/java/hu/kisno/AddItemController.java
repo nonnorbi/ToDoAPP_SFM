@@ -18,9 +18,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -47,7 +45,7 @@ public class AddItemController implements Initializable {
     @FXML
     private Label nameLabel;
 
-
+    DatabaseConnection connectNow = new DatabaseConnection();
     ObservableList<Task> oblist = FXCollections.observableArrayList();
     int uID;
     Task task = null;
@@ -65,266 +63,73 @@ public class AddItemController implements Initializable {
     }
 
     //uID read from file
-    /*public void readFile() {
-        try( Scanner file = new Scanner(new File("C:\\Users\\kisno\\IdeaProjects\\ToDoAPP_SFM\\src\\main\\resources\\uID.txt")) ){
-            while(file.hasNext()){
-                uID = file.next();
-                System.out.println(uID + " additem controller");
-            }
-        } catch ( FileNotFoundException e ) {
-            e.printStackTrace();
-            e.getCause();
-        }
-    }*/
     public void readFile() throws IOException {
 
         FileReader inputReader = new FileReader("C:/Users/kisno/IdeaProjects/ToDoAPP_SFM/uID.txt"); //C:\Users\kisno\IdeaProjects\ToDoAPP_SFM\
         BufferedReader reader = new BufferedReader(inputReader);
-        String line = null;
+        String line ;
         while ( (line = reader.readLine()) != null ){
-            //System.out.println(line);
             uID = Integer.parseInt(line.trim());
-            //System.out.println(uID);
         }
         reader.close();
-    }
-
-    //Add task
-    @FXML
-    public void addOnAction(MouseEvent event){
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection con = connectNow.getConnection();
-
-        String task = taskField.getText();
-        String descript = descriptionField.getText();
-        String deadline = String.valueOf(dateFld.getValue());
-
-        if( task.isBlank() || descript.isBlank() || deadline.isBlank() ){
-            errorLabel.setText("Please give all information!");
-        }
-
-        errorLabel.setText("");
-
-        String insertField = "INSERT INTO tasks(userid, description, task, deadline) VALUES('";
-        String insertValues = uID + "','" + descript + "','" + task + "','" + deadline + "')";
-        String insertTask = insertField + insertValues;
-
-        try{
-
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(insertTask);
-            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.task = '" + uID + "'");
-
-            refresh();
-
-        }catch ( SQLException throwables ){
-            throwables.printStackTrace();
-            throwables.getCause();
-        }
-
-    }
-
-    //Delete Task
-    public void deleteOnAction(MouseEvent event){
-
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection con = connectNow.getConnection();
-
-        task = table.getSelectionModel().getSelectedItem();
-
-        try ( PreparedStatement pstmt = con.prepareStatement("DELETE FROM tasks WHERE taskid  = '" + task.getTaskid() + "'") ) {
-            pstmt.execute();
-            refresh();
-        } catch ( SQLException throwables ) {
-            throwables.printStackTrace();
-            throwables.getCause();
-        }
-
-    }
-
-    //Edit Task
-    @FXML
-    private void editableOnAction(MouseEvent event){
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection con = connectNow.getConnection();
-
-        task = table.getSelectionModel().getSelectedItem();
-        int  id = task.getTaskid();
-        String ts = task.getTask();
-        String di = task.getDescription();
-        String de = task.getDeadline();
-        System.out.println(id + ", " + ts + ", " + di + ", " + de );
-
-        try {
-            PreparedStatement ps = con.prepareStatement( "UPDATE tasks SET task = '" + task.getTask() + "', description = '" + task.getDescription()
-                    + "', deadline = '" + task.getDeadline() + "' WHERE taskid = '" + task.getTaskid() + "'" );
-            ps.execute();
-
-        } catch ( SQLException throwables ) {
-            throwables.printStackTrace();
-        }
-        refresh();
-
-    }
-
-    @FXML
-    private void searchOnAction(MouseEvent event){
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection con = connectNow.getConnection();
-
-        String task = taskField.getText();
-        String deadline = null;
-
-        if(dateFld.getValue() != null) {
-             deadline = String.valueOf(dateFld.getValue());
-        }else{
-            errorLabel.setText("Please give date!");
-        }
-        if( !(deadline.isEmpty()) && !(task.isEmpty()) ){   //If search for task and deadline
-
-            errorLabel.setText("");
-            oblist.clear();
-
-            try {
-                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID
-                        + "' AND t.deadline = '" + deadline + "' AND t.task = '" + task + "'");
-                while (rs.next()){
-                    oblist.add(new Task( rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
-                            rs.getString("task"), rs.getString("deadline") ));
-                }
-
-                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
-                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
-
-                table.setItems(oblist);
-
-
-            } catch ( SQLException throwables ) {
-                throwables.printStackTrace();
-            }
-
-        }else if( !(deadline.isEmpty()) && (task.isEmpty()) ){  //If search for deadline
-
-            errorLabel.setText("");
-            oblist.clear();
-
-            try {
-                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID
-                        + "' AND t.deadline = '" + deadline + "'");
-                while (rs.next()){
-                    oblist.add(new Task( rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
-                            rs.getString("task"), rs.getString("deadline") ));
-                }
-
-                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
-                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
-
-                table.setItems(oblist);
-
-
-            } catch ( SQLException throwables ) {
-                throwables.printStackTrace();
-            }
-
-        }
-
-    }
-
-    //Refresh table
-    public void refresh(){
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection con = connectNow.getConnection();
-
-        oblist.clear();
-
-        try {
-
-            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid  = u.userid WHERE u.userid LIKE '" + uID + "'");
-            while (rs.next()){
-                oblist.add(new Task( rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
-                        rs.getString("task"), rs.getString("deadline") ));
-            }
-
-            col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
-            col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
-            col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
-
-            table.setEditable(true);
-
-            if(oblist.isEmpty()){
-                table.setPlaceholder(new Label("There ara no task, yet!"));
-            }
-
-            table.setItems(oblist);
-
-
-        } catch ( SQLException throwables ) {
-            throwables.printStackTrace();
-        }
     }
 
     //Initialize the table
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        DatabaseConnection connectNow = new DatabaseConnection();
         Connection con = connectNow.getConnection();
-
-        LocalDate localdate = LocalDate.now();
-        String ldate = localdate.toString();
+        LocalDate localDate =  LocalDate.now();
+        String ldate = localDate.toString();
         int alert = 0;
 
+        //Read uID
         try {
             readFile();
         } catch ( IOException e ) {
             e.printStackTrace();
         }
 
-        try{
-            ResultSet rs = con.createStatement().executeQuery("SELECT * FROM users WHERE userid = '" + uID + "'");
-            while (rs.next()){
-                String fname = rs.getString("firstname");
-                String lname = rs.getString("lastname");
-                String uname = rs.getString("username");
-                nameLabel.setText(lname + " " + fname + " (" + uname + ") 's todo list!");
-            }
-        }catch ( SQLException e ){
-            e.printStackTrace();
-            e.getCause();
-        }
-
         try {
-            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID + "'");
+            ResultSet rs = con.createStatement().executeQuery("SELECT * FROM users WHERE userid ='" + uID + "'");
             while (rs.next()){
-                oblist.add(new Task( rs.getInt("taskid"), rs.getInt("userid"), rs.getString("description"),
-                        rs.getString("task"), rs.getString("deadline") ));
-                String deadline = rs.getString("deadline");
-
-                System.out.println(ldate + " " + deadline + " " + ldate.compareTo(deadline));
-
-                if ( ldate.compareTo(deadline) > 0 ) {
-                        alert++;
-                }
+                nameLabel.setText( rs.getString("lastname") + " " + rs.getString("firstname") + " (" + rs.getString("username")
+                + ") 's todo list!" );
             }
-
         } catch ( SQLException throwables ) {
             throwables.printStackTrace();
             throwables.getCause();
         }
 
-        if (alert > 0){
+        try {
+            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid  = u.userid WHERE u.userid LIKE '" + uID + "'");
+            while (rs.next()){
+                oblist.add(new Task( rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                        rs.getString("task"), rs.getString("deadline") ));
+                String deadline = rs.getString("deadline");
+                if ( ldate.compareTo(deadline) > 0 ){
+                    alert++;
+                }
+            }
+        } catch ( SQLException throwables ) {
+            throwables.printStackTrace();
+            throwables.getCause();
+        }
+        //Alert for expired deadline
+        if ( alert > 0 ){
 
             Stage window = new Stage();
             window.initModality(Modality.APPLICATION_MODAL);
             window.initStyle(StageStyle.UNDECORATED);
-            window.setWidth(500);
+            window.setWidth(300);
+            window.setHeight(130);
             Label label = new Label();
-            label.setText("You have " + alert + " task(s) that have expired! Please delete it/them or add new deadline(s)");
-            Button  closeButton = new Button("OK");
-            closeButton.setOnAction(e-> window.close() );
-            VBox layout = new VBox(10);
-            layout.getChildren().addAll(label, closeButton);
+            label.setText("You have " + alert + "task(s) that have expired!");
+            Label label2 = new Label();
+            label2.setText("Please delete it/them or set new deadline(s)");
+            Button closeButton = new Button("OK");
+            closeButton.setOnAction(e-> window.close());
+            VBox layout = new VBox();
+            layout.getChildren().addAll(label, label2, closeButton);
             layout.setAlignment(Pos.CENTER);
             Scene scene = new Scene(layout);
             window.setScene(scene);
@@ -352,16 +157,302 @@ public class AddItemController implements Initializable {
         });
 
         table.setEditable(true);
+        table.setItems(oblist);
+    }
 
-        if(oblist.isEmpty()){
-            table.setPlaceholder(new Label("There ara no task, yet!"));
+    //Add task
+    @FXML
+    public void addOnAction(MouseEvent event) {
+        Connection con = connectNow.getConnection();
+
+        if ( taskField.getText() == null || descriptionField.getText() == null || dateFld.getValue() == null ){
+            errorLabel.setText("Please give all information!");
+            System.out.println("Error!");
+        }else{
+            errorLabel.setText("");
         }
 
 
-        table.setItems(oblist);
+        System.out.println("Add item (from textfields): " + taskField.getText() + " " + descriptionField.getText() + " " + String.valueOf(dateFld.getValue()) + "\n" );
 
+        String insertField = "INSERT INTO tasks(userid, description, task, deadline) VALUES('";
+        String insertValues = uID + "','" + descriptionField.getText() + "','" + taskField.getText() + "','" + String.valueOf(dateFld.getValue()) + "')";
+        String insertTask = insertField + insertValues;
+
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(insertTask);
+            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.task = '" + uID + "'");
+
+            refresh();
+
+        } catch ( SQLException throwables ) {
+            throwables.printStackTrace();
+            throwables.getCause();
+        }
+        taskField.setText("");
+        descriptionField.setText("");
+        dateFld.setValue(null);
+
+    }
+
+    //Delete task (row)
+    @FXML
+    public void deleteOnAction(MouseEvent event) {
+        Connection con = connectNow.getConnection();
+
+        task = table.getSelectionModel().getSelectedItem();
+
+        System.out.println("Delete row: " + task.getTaskid() + " " + task.getUserid() + " | " + task.getTask() + ", " + task.getDescription() + ", " + task.getDeadline());
+        System.out.println(uID + "\n");
+
+        try {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM tasks WHERE taskid = '" + task.getUserid() + "'");
+            ps.execute();
+            refresh();
+
+        } catch ( SQLException throwables ) {
+            throwables.printStackTrace();
+            throwables.getCause();
+        }
+    }
+
+    //Edit task
+    @FXML
+    public void editableOnAction(MouseEvent event) {
+        Connection con = connectNow.getConnection();
+
+        task = table.getSelectionModel().getSelectedItem();
+
+        System.out.println("taskid:" + task.getUserid() + ", userid:" + task.getTaskid() + " | " + task.getTask() + ", " + task.getDescription() + ", " + task.getDeadline());
+        System.out.println(uID + "\n");
+
+        try {
+            PreparedStatement ps = con.prepareStatement("UPDATE tasks SET task = '" + task.getTask() + "', description = '" + task.getDescription()
+                    + "', deadline = '" + task.getDeadline() + "' WHERE taskid = '" + task.getUserid() + "'");
+            ps.execute();
+
+            ResultSet rs =con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID + "'");
+            System.out.println("kiolvasás" + "uid:" + uID + "taskid:" + task.getTaskid() );
+            while (rs.next()){
+                int uid = rs.getInt("userid");
+                int tid = rs.getInt("taskid");
+                String task = rs.getString("task");
+                String description = rs.getString("description");
+                String deadline = rs.getString("deadline");
+
+                System.out.println("userid: " + uid + " taskid:" + tid + " | " +  task + ", " + description + ", " + deadline);
+            }
+            System.out.println("\n");
+
+
+            refresh();
+
+        } catch ( SQLException throwables ) {
+            throwables.printStackTrace();
+            throwables.getCause();
+        }
+    }
+
+    //Search task
+    @FXML
+    public void searchOnAction(MouseEvent event) {
+        Connection con = connectNow.getConnection();
+
+        oblist.clear();
+
+        if ( (dateFld.getValue() == null) && (taskField.getText().isBlank()) && (descriptionField.getText().isBlank()) ){ //Every field is blank
+
+            errorLabel.setText("Please give at least deadline!");
+            System.out.println("IF deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+        }else if ( !(dateFld.getValue() == null) && (taskField.getText().isBlank()) && (descriptionField.getText().isBlank()) ){ //Search by deadline
+
+            errorLabel.setText("");
+            System.out.println("ELSE IF deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID +
+                        "' AND t.deadline = '" + String.valueOf(dateFld.getValue()) + "'" );
+                while (rs.next()){
+                    oblist.add(new Task(rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline" )) );
+                }
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+                throwables.getCause();
+            }
+
+        }else if( !(dateFld.getValue() == null) && !(taskField.getText().isBlank()) && (descriptionField.getText().isBlank()) ){ //Search by deadline and task
+
+            errorLabel.setText("");
+            System.out.println("ELSE IF2 deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID +
+                        "' AND t.deadline = '" + String.valueOf(dateFld.getValue()) + "' AND t.task = '" + taskField.getText() + "'" );
+                while (rs.next()){
+                    oblist.add(new Task(rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline" )) );
+                }
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+                throwables.getCause();
+            }
+
+        }else if ( !(dateFld.getValue() == null) && !(taskField.getText().isBlank()) && !(descriptionField.getText().isBlank()) ){ //Every field is filld
+
+            errorLabel.setText("");
+            System.out.println("ELSE IF2 deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID +
+                        "' AND t.deadline = '" + String.valueOf(dateFld.getValue()) + "' AND t.task = '"
+                        + taskField.getText() + "' AND t.description = '" + descriptionField.getText() + "'" );
+                while (rs.next()){
+                    oblist.add(new Task(rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline" )) );
+                }
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+                throwables.getCause();
+            }
+
+        }else if ( (dateFld.getValue() == null) && !(taskField.getText().isBlank()) && !(descriptionField.getText().isBlank()) ){ //Search by task and description
+
+            errorLabel.setText("");
+            System.out.println("ELSE IF3 deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID +
+                        "' AND t.task = '" + taskField.getText() + "' AND t.description = '" + descriptionField.getText() + "'");
+                while (rs.next()){
+                    oblist.add(new Task(rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline" )) );
+                }
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+                throwables.getCause();
+            }
+
+        }else if ( !(dateFld.getValue() == null) && (taskField.getText().isBlank()) && !(descriptionField.getText().isBlank()) ){ //Search by deadline and description
+
+            errorLabel.setText("");
+            System.out.println("ELSE IF4 deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID +
+                        "' AND t.deadline = '" + String.valueOf(dateFld.getValue()) + "' AND t.description = '" + descriptionField.getText() + "'");
+                while (rs.next()){
+                    oblist.add(new Task(rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline" )) );
+                }
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+                throwables.getCause();
+            }
+        }else if ( (dateFld.getValue() == null) && !(taskField.getText().isBlank()) && (descriptionField.getText().isBlank()) ){ //Search by task
+
+            errorLabel.setText("");
+            System.out.println("ELSE IF4 deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID +
+                        "' AND t.task = '" + taskField.getText() + "'");
+                while (rs.next()){
+                    oblist.add(new Task(rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline" )) );
+                }
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+                throwables.getCause();
+            }
+
+        }else if ( (dateFld.getValue() == null) && (taskField.getText().isBlank()) && !(descriptionField.getText().isBlank()) ){ //Search by description
+
+            errorLabel.setText("");
+            System.out.println("ELSE IF5 deadline: " + dateFld.getValue() + " task: " + taskField.getText() + " descript: " + descriptionField.getText());
+
+            try {
+                ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid = u.userid WHERE u.userid LIKE '" + uID +
+                        "' AND t.description = '" + descriptionField.getText() + "'");
+                while (rs.next()){
+                    oblist.add(new Task(rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                            rs.getString("task"), rs.getString("deadline" )) );
+                }
+                col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+                col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+                col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+                table.setItems(oblist);
+
+            } catch ( SQLException throwables ) {
+                throwables.printStackTrace();
+                throwables.getCause();
+            }
+
+        }
 
 
     }
 
+    //Table refresh
+    public void refresh(){
+        Connection con = connectNow.getConnection();
+
+        oblist.clear();
+
+        try {
+            ResultSet rs = con.createStatement().executeQuery("SELECT t.* FROM users u INNER JOIN tasks t ON t.userid  = u.userid WHERE u.userid LIKE '" + uID + "'");
+            while (rs.next()){
+                oblist.add(new Task( rs.getInt("userid"), rs.getInt("taskid"), rs.getString("description"),
+                        rs.getString("task"), rs.getString("deadline") ) );
+            }
+
+            col_description.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
+            col_task.setCellValueFactory(new PropertyValueFactory<Task, String>("task"));
+            col_deadline.setCellValueFactory(new PropertyValueFactory<Task, String>("deadline"));
+
+            table.setItems(oblist);
+
+        } catch ( SQLException throwables ) {
+            throwables.printStackTrace();
+        }
+    }
 }
